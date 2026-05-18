@@ -1,3 +1,75 @@
-<html>
-    <h1>hallo</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Drive File Downloader</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; }
+        h1 { color: #333; }
+        .file-list { list-style: none; padding: 0; }
+        .file-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; }
+        .download-btn { background-color: #007bff; color: white; text-decoration: none; padding: 6px 12px; border-radius: 4px; font-size: 14px; }
+        .download-btn:hover { background-color: #0056b3; }
+        .error { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h1>Shared Files Folder</h1>
+    <div id="status">Loading files...</div>
+    <ul id="file-container" class="file-list"></ul>
+
+    <script>
+        // CONFIGURATION: Replace these with your details
+        const API_KEY = 'AIzaSyAGQfDiuqM0L0CjoJjWyHj1AJc7tsj9_bk';
+        const FOLDER_ID = '1BOoFUul-K-slUQJ_KldEgrHhb9x19Axa';
+
+        // URL to fetch the file metadata from the Google Drive API
+        const url = `https://googleapis.com{FOLDER_ID}'+in+parents+and+trashed=false&fields=files(id,name,mimeType)&key=${API_KEY}`;
+
+        async function fetchFiles() {
+            const statusDiv = document.getElementById('status');
+            const container = document.getElementById('file-container');
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Failed to fetch data. Check your API key and Folder ID permissions.');
+                
+                const data = await response.json();
+                statusDiv.style.display = 'none'; // Hide loading message
+
+                if (data.files.length === 0) {
+                    statusDiv.style.display = 'block';
+                    statusDiv.innerText = 'No files found in this folder.';
+                    return;
+                }
+
+                data.files.forEach(file => {
+                    // Skip sub-folders; we only want downloadable files
+                    if (file.mimeType === 'application/vnd.google-apps.folder') return;
+
+                    const li = document.createElement('li');
+                    li.className = 'file-item';
+
+                    // Direct web content download link
+                    const downloadUrl = `https://google.com{file.id}`;
+
+                    li.innerHTML = `
+                        <span><strong>${file.name}</strong></span>
+                        <a href="${downloadUrl}" class="download-btn" target="_blank" download>Download</a>
+                    `;
+                    container.appendChild(li);
+                });
+
+            } catch (error) {
+                statusDiv.className = 'error';
+                statusDiv.innerText = `Error: ${error.message}`;
+            }
+        }
+
+        // Run the script on page load
+        window.onload = fetchFiles;
+    </script>
+</body>
 </html>
