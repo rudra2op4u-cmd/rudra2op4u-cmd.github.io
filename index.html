@@ -616,47 +616,72 @@
         // 4. GOOGLE DRIVE v3 API FETCH & DIRECTORY NAVIGATION
         // ============================================================================
         async function fetchDriveFiles(folderId) {
-        const statusEl = document.getElementById('status'); // Or your loader element ID
-        const listEl = document.getElementById('files');
-        
-        statusEl.style.display = 'block';
-        statusEl.innerText = 'SCANNING SECTOR...';
-        listEl.style.display = 'none';
-    
-        // 1. AbortController prevents infinite network hanging after 8 seconds
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000);
-    
-        const query = encodeURIComponent(`'${folderId}' in parents and trashed = false`);
-        const fields = encodeURIComponent('files(id,name,mimeType,size,modifiedTime,webContentLink,webViewLink)');
-        const url = `https://www.googleapis.com/drive/v3/files?q=${query}&fields=${fields}&key=${API_KEY}`;
-    
-        try {
-            const response = await fetch(url, { signal: controller.signal });
-            const data = await response.json();
-    
-            // 2. Extract the REAL reason Google rejected the request
-            if (!response.ok) {
-                const googleMsg = data?.error?.message || `HTTP ${response.status}`;
-                throw new Error(`Google API Rejected [${response.status}]: ${googleMsg}`);
+            const statusContainer = document.getElementById('statusContainer');
+            const statusSpinner = document.getElementById('statusSpinner');
+            const statusTitle = document.getElementById('statusTitle');
+            const statusMessage = document.getElementById('statusMessage');
+            const filesContainer = document.getElementById('filesContainer');
+            const loadingBar = document.getElementById('loadingBar');
+            const statusDot = document.getElementById('statusDot');
+            const statusBadgeText = document.getElementById('statusBadgeText');
+
+            // Update UI for loading state
+            loadingBar.classList.remove('hidden');
+            statusContainer.classList.remove('hidden');
+            statusSpinner.classList.remove('hidden');
+            statusTitle.textContent = 'ACCESSING DATA SECTOR...';
+            statusTitle.className = 'font-orbitron text-sm tracking-widest text-[#fcee0a] uppercase mb-1';
+            statusMessage.textContent = `Querying Node ID: ${folderId}`;
+            filesContainer.classList.add('hidden');
+            document.getElementById('activeFolderIdReadout').textContent = folderId;
+
+            renderBreadcrumbs();
+
+            const query = encodeURIComponent(`'${folderId}' in parents and trashed = false`);
+            const fields = encodeURIComponent('files(id,name,mimeType,size,modifiedTime,webContentLink,webViewLink)');
+            const url = `https://www.googleapis.com/drive/v3/files?q=${query}&pageSize=1000&fields=${fields}&key=${API_KEY}`;
+
+            const startTime = performance.now();
+            logSysEvent(`GET /drive/v3/files?parent=${folderId}`, 'INFO');
+
+            try {
+                const response = await fetch(url);
+                const elapsed = Math.round(performance.now() - startTime);
+                document.getElementById('latencyReadout').textContent = `PING: ${elapsed} ms`;
+
+                if (!response.ok) {
+                    let errorDetail = 'API processing error. Validate permissions constraints.';
+                    try {
+                        const errJson = await response.json();
+                        if (errJson?.error?.message) errorDetail = errJson.error.message;
+                    } catch (_) {}
+                    throw new Error(errorDetail);
+                }
+
+                const data = await response.json();
+                currentRawFiles = Array.isArray(data.files) ? data.files : [];
+
+                statusDot.className = 'w-2 h-2 rounded-full bg-[#00ff66] animate-pulse';
+                statusBadgeText.textContent = 'NET_LINK: ONLINE';
+
+                logSysEvent(`Received ${currentRawFiles.length} nodes in ${elapsed}ms.`, 'OK');
+                updateSectorTelemetry(currentRawFiles);
+                applyFiltersAndRender();
+
+            } catch (error) {
+                playCyberSound('error');
+                statusDot.className = 'w-2 h-2 rounded-full bg-[#ff003c] animate-ping';
+                statusBadgeText.textContent = 'NET_LINK: ERROR';
+
+                statusSpinner.classList.add('hidden');
+                statusTitle.textContent = 'BREACH PROTOCOL FAILED // API ERROR';
+                statusTitle.className = 'font-orbitron text-sm tracking-widest text-[#ff003c] uppercase mb-2';
+                statusMessage.textContent = error.message;
+                logSysEvent(`Sector read failed: ${error.message}`, 'ERR');
+            } finally {
+                loadingBar.classList.add('hidden');
             }
-    
-            statusEl.style.display = 'none';
-            renderFiles(data.files);
-    
-        } catch (error) {
-            // 3. Force the status screen to display the actual failure instead of buffering
-            statusEl.style.display = 'block';
-            if (error.name === 'AbortError') {
-                statusEl.innerText = 'CRITICAL: Connection timed out after 8s. Network or firewall blocked googleapis.com.';
-            } else {
-                statusEl.innerText = `SYSTEM FAULT // ${error.message}`;
-            }
-            console.error('Drive Fetch Diagnostic:', error);
-        } finally {
-            clearTimeout(timeoutId);
         }
-    }
 
         // Update top HUD counters
         function updateSectorTelemetry(files) {
@@ -671,6 +696,21 @@
                     fileCount++;
                     if (item.size) totalBytes += parseInt(item.size, 10) || 0;
                 }
+            });
+
+            document.getElementById('statFolders').textContent = String(folderCount).padStart(2, '0');
+            document.getElementById('statFiles').textContent = String(fileCount).padStart(2, '0');
+            document.getElementById('statVolume').textContent = formatBytes(totalBytes);
+        }
+
+        // ============================================================================
+        // 5. FILTERING, SORTING & DOM RENDERING
+        // ============================================================================
+        function applyFiltersAndRender() {
+            const searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
+            const clearBtn = document.getElementById('clearSearchBtn');
+            const sortMode = document.getElementById('sortSelect').value;
+
             if (searchQuery.length > 0) {
                 clearBtn.classList.remove('hidden');
             } else {
