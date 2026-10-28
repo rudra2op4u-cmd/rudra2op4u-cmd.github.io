@@ -1,342 +1,1310 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MY CREATIONS</title>
+    <title>NETRUNNER // DATA TERMINAL v2.077</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Orbitron, Rajdhani, Share Tech Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --bg: #f8fafc;
-            --surface: #ffffff;
-            --text: #1e293b;
-            --text-light: #64748b;
-            --border: #e2e8f0;
+            --bg-obsidian: #07070c;
+            --bg-panel: #0d111a;
+            --bg-panel-hover: #131b2e;
+            --cyber-yellow: #fcee0a;
+            --cyber-cyan: #00f0ff;
+            --cyber-magenta: #ff003c;
+            --cyber-green: #00ff66;
+            --cyber-border: #1e293b;
+            --text-main: #e2e8f0;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: var(--cyber-cyan) #07070c;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #07070c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--cyber-cyan);
+            border-radius: 2px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--cyber-yellow);
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
+            background-color: var(--bg-obsidian);
+            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
             margin: 0;
-            padding: 40px 20px;
-            display: flex;
-            justify-content: center;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 90% 90%, rgba(255, 0, 60, 0.06) 0%, transparent 40%),
+                linear-gradient(rgba(0, 240, 255, 0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.025) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
         }
 
-        .container {
-            width: 100%;
-            max-width: 900px;
-            background: var(--surface);
-            padding: 32px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .font-mono-tech {
+            font-family: 'Share Tech Mono', monospace;
         }
 
-        h2 {
-            margin-top: 0;
-            font-size: 24px;
+        /* Subtle CRT Scanline Overlay */
+        .crt-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, 0.22) 50%
+            );
+            background-size: 100% 4px;
+            opacity: 0.45;
+        }
+
+        /* Chamfered Cyberpunk Polygons */
+        .cyber-panel {
+            background: rgba(13, 17, 26, 0.9);
+            border: 1px solid rgba(0, 240, 255, 0.25);
+            clip-path: polygon(
+                0 0, 
+                calc(100% - 18px) 0, 
+                100% 18px, 
+                100% 100%, 
+                18px 100%, 
+                0 calc(100% - 18px)
+            );
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 240, 255, 0.03);
+            backdrop-filter: blur(10px);
+        }
+
+        .cyber-card {
+            background: rgba(13, 17, 26, 0.85);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            clip-path: polygon(
+                0 0, 
+                calc(100% - 12px) 0, 
+                100% 12px, 
+                100% 100%, 
+                12px 100%, 
+                0 calc(100% - 12px)
+            );
+            transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .cyber-card:hover {
+            background: rgba(19, 27, 46, 0.95);
+            border-color: var(--cyber-cyan);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(0, 240, 255, 0.12);
+        }
+
+        .cyber-btn-yellow {
+            background: var(--cyber-yellow);
+            color: #07070c;
+            font-family: 'Orbitron', sans-serif;
             font-weight: 700;
-            color: #0f172a;
-            margin-bottom: 24px;
-        }
-
-        /* Tabs System */
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 24px;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 8px;
-            flex-wrap: wrap; /* Allows tabs to wrap on smaller mobile screens */
-        }
-
-        .tab-btn {
-            padding: 10px 20px;
-            background: transparent;
-            border: none;
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--text-light);
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-
-        .tab-btn.active {
-            color: var(--primary);
-            background: #eff6ff;
-        }
-
-        .tab-btn:hover:not(.active) {
-            background: #f1f5f9;
-            color: var(--text);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Iframe Styling */
-        .web-frame {
-            width: 100%;
-            height: 650px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background: var(--bg);
-        }
-
-        /* Navigation / Breadcrumbs (Drive Tab) */
-        .navigation-bar {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            gap: 12px;
-            min-height: 40px;
-        }
-
-        .back-btn {
-            background-color: #f1f5f9;
-            color: var(--text);
-            border: 1px solid var(--border);
-            padding: 8px 14px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 14px;
-            display: none;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
-        }
-
-        .back-btn:hover {
-            background-color: #e2e8f0;
-        }
-
-        .breadcrumb {
-            font-size: 14px;
-            color: var(--text-light);
-            font-weight: 500;
-        }
-
-        /* Status & Loader */
-        .status-message {
-            padding: 24px;
-            text-align: center;
-            color: var(--text-light);
-            font-size: 15px;
-            background: #f1f5f9;
-            border-radius: 8px;
-            border: 1px dashed var(--border);
-        }
-
-        /* File Tree Table UI */
-        .file-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .file-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 20px;
-            border-bottom: 1px solid var(--border);
-            background: var(--surface);
-            transition: background 0.15s ease;
-        }
-
-        .file-item:last-child { border-bottom: none; }
-        .file-item:hover { background-color: #f8fafc; }
-
-        .file-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 500;
-            font-size: 15px;
-            cursor: pointer;
-            flex-grow: 1;
-        }
-
-        .file-actions { display: flex; gap: 8px; }
-
-        /* Action Buttons */
-        .btn {
-            padding: 6px 14px;
-            text-decoration: none;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 600;
+            letter-spacing: 0.06em;
+            clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
             transition: all 0.15s ease;
-            display: inline-flex;
-            align-items: center;
+        }
+        .cyber-btn-yellow:hover {
+            background: #fff24d;
+            box-shadow: 0 0 15px rgba(252, 238, 10, 0.6);
+            transform: translateY(-1px);
+        }
+        .cyber-btn-yellow:active {
+            transform: translateY(0);
         }
 
-        .view-btn { background: #f1f5f9; color: #334155; border: 1px solid var(--border); }
-        .view-btn:hover { background: #e2e8f0; }
-        
-        .dl-btn { background: var(--primary); color: white; border: 1px solid transparent; }
-        .dl-btn:hover { background: var(--primary-hover); }
+        .cyber-btn-cyan {
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--cyber-cyan);
+            border: 1px solid rgba(0, 240, 255, 0.45);
+            font-family: 'Share Tech Mono', monospace;
+            clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+            transition: all 0.15s ease;
+        }
+        .cyber-btn-cyan:hover {
+            background: var(--cyber-cyan);
+            color: #07070c;
+            box-shadow: 0 0 14px rgba(0, 240, 255, 0.5);
+        }
 
-        .icon { font-size: 18px; display: inline-block; width: 20px; text-align: center; }
+        .cyber-btn-magenta {
+            background: rgba(255, 0, 60, 0.12);
+            color: var(--cyber-magenta);
+            border: 1px solid rgba(255, 0, 60, 0.5);
+            font-family: 'Share Tech Mono', monospace;
+            clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+            transition: all 0.15s ease;
+        }
+        .cyber-btn-magenta:hover {
+            background: var(--cyber-magenta);
+            color: #ffffff;
+            box-shadow: 0 0 14px rgba(255, 0, 60, 0.55);
+        }
+
+        /* File Row Styling */
+        .file-row {
+            border-left: 3px solid transparent;
+            transition: all 0.15s ease;
+        }
+        .file-row:hover {
+            border-left-color: var(--cyber-yellow);
+            background: linear-gradient(90deg, rgba(252, 238, 10, 0.07) 0%, rgba(0, 240, 255, 0.03) 40%, transparent 100%);
+        }
+        .file-row.folder-row:hover {
+            border-left-color: var(--cyber-cyan);
+            background: linear-gradient(90deg, rgba(0, 240, 255, 0.1) 0%, rgba(0, 240, 255, 0.02) 50%, transparent 100%);
+        }
+
+        /* Glitch Header Effect */
+        .glitch-text {
+            position: relative;
+            text-shadow: 2px 0 rgba(0, 240, 255, 0.7), -2px 0 rgba(255, 0, 60, 0.7);
+        }
+
+        /* Animated Scanner Bar */
+        @keyframes scanPulse {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(200%); }
+        }
+        .scanner-bar {
+            overflow: hidden;
+            position: relative;
+        }
+        .scanner-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--cyber-cyan), var(--cyber-yellow), transparent);
+            animation: scanPulse 1.6s infinite linear;
+        }
+
+        /* Toast Notification */
+        .cyber-toast {
+            clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+        }
     </style>
 </head>
-<body>
+<body class="p-3 sm:p-6 md:p-8 flex flex-col items-center justify-between">
+    <!-- Subtle Scanline Overlay -->
+    <div class="crt-overlay"></div>
 
-    <div class="container">
-        <h2>Personal Dashboard</h2>
-        
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('drive')">📁Drive Downloads</button>
-            <button class="tab-btn" onclick="switchTab('notices')">📌 Notices & Circulars</button>
-            <button class="tab-btn" onclick="switchTab('portal')">🎓 Student Portal</button>
-        </div>
+    <!-- Main Application Shell -->
+    <div class="w-full max-w-6xl space-y-5 my-auto">
 
-        <div id="drive-tab" class="tab-content active">
-            <div class="navigation-bar">
-                <button id="backBtn" class="back-btn" onclick="navigateUp()">← Back</button>
-                <div id="breadcrumb" class="breadcrumb">Root Directory</div>
+        <!-- TOP HUD HEADER -->
+        <header class="cyber-panel p-4 sm:p-6 relative overflow-hidden">
+            <!-- Top Decorative Warning Strip -->
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-4 border-b border-cyan-500/20 text-xs font-mono-tech tracking-widest text-slate-400">
+                <div class="flex items-center gap-3">
+                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 bg-yellow-400/10 border border-yellow-400/40 text-[#fcee0a]">
+                        <span id="statusDot" class="w-2 h-2 rounded-full bg-[#00ff66] animate-pulse"></span>
+                        <span id="statusBadgeText">NET_LINK: ONLINE</span>
+                    </span>
+                    <span class="hidden sm:inline text-cyan-400/80">PROTOCOL // GDRIVE_V3_ENCRYPTED</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span id="latencyReadout" class="text-cyan-400">PING: -- ms</span>
+                    <span id="liveClock" class="text-[#fcee0a] font-bold">00:00:00 UTC</span>
+                </div>
             </div>
 
-            <div id="status" class="status-message">Loading system directory...</div>
-            <ul id="files" class="file-list" style="display: none;"></ul>
-        </div>
+            <!-- Main Title & Quick Telemetry -->
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-3 h-8 bg-[#fcee0a] shadow-[0_0_12px_#fcee0a]"></div>
+                        <h1 class="font-orbitron text-2xl sm:text-3xl md:text-4xl font-black tracking-wider uppercase text-white glitch-text">
+                            MY CREATIONS <span class="text-[#fcee0a]">//</span> DATA VAULT
+                        </h1>
+                    </div>
+                    <p class="font-mono-tech text-xs sm:text-sm text-cyan-300/70 mt-1 pl-6">
+                        DIRECT NEURAL SUBNET ACCESS &bull; ZERO-IFRAME ARCHIVE EXTRACTOR
+                    </p>
+                </div>
 
-        <div id="notices-tab" class="tab-content">
-            <iframe class="web-frame" src="https://www.mbwa.org.in/notices-circular.php" title="MBWA Notices and Circulars"></iframe>
-        </div>
+                <!-- Telemetry Counters & Action Controls -->
+                <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+                    <div class="bg-slate-950/90 border border-cyan-500/30 px-3 py-1.5 text-center min-w-[82px]">
+                        <div class="text-[10px] font-mono-tech text-slate-400 uppercase">SUB_DIRS</div>
+                        <div id="statFolders" class="font-orbitron text-lg font-bold text-[#00f0ff]">00</div>
+                    </div>
+                    <div class="bg-slate-950/90 border border-yellow-400/30 px-3 py-1.5 text-center min-w-[82px]">
+                        <div class="text-[10px] font-mono-tech text-slate-400 uppercase">FILES</div>
+                        <div id="statFiles" class="font-orbitron text-lg font-bold text-[#fcee0a]">00</div>
+                    </div>
+                    <div class="bg-slate-950/90 border border-pink-500/30 px-3 py-1.5 text-center min-w-[96px]">
+                        <div class="text-[10px] font-mono-tech text-slate-400 uppercase">SECTOR_VOL</div>
+                        <div id="statVolume" class="font-orbitron text-lg font-bold text-[#ff003c]">0 B</div>
+                    </div>
 
-        <div id="portal-tab" class="tab-content">
-            <iframe class="web-frame" src="https://weblogins.mbwa.org.in/" title="MBWA Web Logins"></iframe>
+                    <!-- Audio Synth Toggle -->
+                    <button id="audioToggleBtn" onclick="toggleAudio()" title="Toggle Cyber UI Sound Effects"
+                        class="cyber-btn-cyan px-3 py-2.5 text-xs flex items-center gap-1.5 cursor-pointer">
+                        <span id="audioIcon">🔊</span>
+                        <span id="audioLabel" class="hidden sm:inline">SFX: ON</span>
+                    </button>
+
+                    <!-- Refresh Current Node -->
+                    <button onclick="refreshCurrentNode()" title="Rescan Current Directory"
+                        class="cyber-btn-yellow px-4 py-2.5 text-xs flex items-center gap-2 cursor-pointer">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        <span>RESCAN</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- NAVIGATION, BREADCRUMB PATH & FILTER BAR -->
+        <section class="cyber-panel p-4 space-y-4">
+            <!-- Top Row: Back Button + Interactive Breadcrumb Trail -->
+            <div class="flex flex-wrap items-center gap-2 pb-3 border-b border-slate-800">
+                <button id="backBtn" onclick="navigateUp()"
+                    class="cyber-btn-magenta px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider hidden items-center gap-1.5 cursor-pointer">
+                    <span>◀</span>
+                    <span>UP_LEVEL</span>
+                </button>
+
+                <button onclick="jumpToBreadcrumb(0)" title="Return to Root Node"
+                    class="cyber-btn-cyan px-2.5 py-1.5 text-xs uppercase cursor-pointer">
+                    ⌂ ROOT
+                </button>
+
+                <div class="text-slate-600 font-mono-tech select-none">//</div>
+
+                <!-- Dynamic Breadcrumb Container -->
+                <nav id="breadcrumbTrail" aria-label="Directory Breadcrumbs"
+                    class="flex flex-wrap items-center gap-1.5 font-mono-tech text-xs sm:text-sm overflow-x-auto py-1">
+                    <!-- Populated via JS -->
+                </nav>
+            </div>
+
+            <!-- Second Row: Search Input, Type Filter & Sort Matrix -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+                <!-- Search Box -->
+                <div class="md:col-span-5 relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-cyan-400 font-mono-tech text-sm">
+                        &gt;_
+                    </div>
+                    <input id="searchInput" type="text" oninput="applyFiltersAndRender()"
+                        placeholder="QUERY SECTOR FILES... (Press '/' to focus)"
+                        class="w-full bg-slate-950/90 border border-cyan-500/35 focus:border-[#fcee0a] text-slate-100 placeholder-slate-500 font-mono-tech text-sm pl-9 pr-16 py-2 outline-none transition-colors" />
+                    <button id="clearSearchBtn" onclick="clearSearch()"
+                        class="hidden absolute inset-y-1 right-1.5 px-2 text-[11px] font-mono-tech bg-rose-500/20 text-rose-400 hover:bg-rose-500 hover:text-white transition">
+                        CLR
+                    </button>
+                </div>
+
+                <!-- Type Filter Buttons (ALL / DIRS / FILES) -->
+                <div class="md:col-span-4 flex items-center gap-1.5 bg-slate-950/80 p-1 border border-slate-800">
+                    <button onclick="setFilterMode('all')" id="filter-all"
+                        class="filter-tab flex-1 py-1.5 text-xs font-mono-tech uppercase tracking-wider bg-cyan-500/20 text-[#00f0ff] border border-cyan-400/50 transition">
+                        ALL
+                    </button>
+                    <button onclick="setFilterMode('folders')" id="filter-folders"
+                        class="filter-tab flex-1 py-1.5 text-xs font-mono-tech uppercase tracking-wider text-slate-400 hover:text-slate-200 border border-transparent transition">
+                        DIRS
+                    </button>
+                    <button onclick="setFilterMode('files')" id="filter-files"
+                        class="filter-tab flex-1 py-1.5 text-xs font-mono-tech uppercase tracking-wider text-slate-400 hover:text-slate-200 border border-transparent transition">
+                        FILES
+                    </button>
+                </div>
+
+                <!-- Sort Selector & Layout Switch -->
+                <div class="md:col-span-3 flex items-center gap-2">
+                    <select id="sortSelect" onchange="applyFiltersAndRender()" aria-label="Sort files"
+                        class="flex-1 bg-slate-950/90 border border-cyan-500/35 text-cyan-300 font-mono-tech text-xs py-2 px-2.5 outline-none focus:border-[#fcee0a] cursor-pointer">
+                        <option value="name-asc">SORT: NAME [A-Z]</option>
+                        <option value="name-desc">SORT: NAME [Z-A]</option>
+                        <option value="date-desc">SORT: NEWEST FIRST</option>
+                        <option value="date-asc">SORT: OLDEST FIRST</option>
+                        <option value="size-desc">SORT: SIZE [LARGE]</option>
+                        <option value="size-asc">SORT: SIZE [SMALL]</option>
+                    </select>
+
+                    <button id="viewModeBtn" onclick="toggleViewMode()" title="Switch List / Grid View"
+                        class="cyber-btn-cyan px-3 py-2 text-xs font-mono-tech cursor-pointer">
+                        <span id="viewModeLabel">GRID</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- DIRECTORY DATA STREAM (MAIN FILE EXPLORER) -->
+        <main class="cyber-panel min-h-[380px] flex flex-col justify-between relative overflow-hidden">
+            <!-- Top Loading Scanner Strip -->
+            <div id="loadingBar" class="h-1 w-full bg-slate-900 scanner-bar hidden"></div>
+
+            <!-- Table Column Header (Visible in List Mode) -->
+            <div id="listHeader" class="hidden sm:grid sm:grid-cols-12 gap-4 px-5 py-3 bg-slate-950/90 border-b border-cyan-500/20 text-[11px] font-mono-tech uppercase tracking-widest text-slate-400">
+                <div class="sm:col-span-6">DATA_NODE // IDENTIFIER</div>
+                <div class="sm:col-span-2">SIZE_BYTES</div>
+                <div class="sm:col-span-2">TIMESTAMP</div>
+                <div class="sm:col-span-2 text-right">OPERATIONS</div>
+            </div>
+
+            <!-- Status / Loading / Error Container -->
+            <div id="statusContainer" class="my-auto p-10 text-center">
+                <div class="inline-block p-6 border border-dashed border-cyan-500/40 bg-slate-950/70 max-w-md w-full">
+                    <div id="statusSpinner" class="w-10 h-10 border-2 border-[#00f0ff] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <div id="statusTitle" class="font-orbitron text-sm tracking-widest text-[#fcee0a] uppercase mb-1">
+                        ESTABLISHING HANDSHAKE...
+                    </div>
+                    <p id="statusMessage" class="font-mono-tech text-xs text-slate-400">
+                        Decrypting Google Drive sector nodes...
+                    </p>
+                </div>
+            </div>
+
+            <!-- Files Container (List or Grid) -->
+            <div id="filesContainer" class="divide-y divide-slate-800/80 hidden"></div>
+
+            <!-- Footer Bar Inside Main Panel -->
+            <div class="px-5 py-2.5 bg-slate-950/90 border-t border-cyan-500/20 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono-tech text-slate-400">
+                <div>
+                    ACTIVE_NODE_ID: <span id="activeFolderIdReadout" class="text-cyan-400 select-all">---</span>
+                </div>
+                <div id="showingCountReadout">
+                    DISPLAYING 0 OF 0 NODES
+                </div>
+            </div>
+        </main>
+
+        <!-- COLLAPSIBLE NETRUNNER SYS.LOG CONSOLE -->
+        <footer class="cyber-panel overflow-hidden">
+            <div onclick="toggleSysLog()"
+                class="px-4 py-2.5 bg-slate-950/95 border-b border-cyan-500/20 flex items-center justify-between cursor-pointer select-none hover:bg-slate-900/90 transition">
+                <div class="flex items-center gap-2 font-mono-tech text-xs">
+                    <span class="text-[#00ff66]">●</span>
+                    <span class="text-[#fcee0a] font-bold tracking-wider">NETRUNNER // SYS.LOG_CONSOLE</span>
+                    <span id="lastLogPreview" class="text-slate-400 truncate max-w-[220px] sm:max-w-md md:max-w-xl ml-2">
+                        [INIT] Neural terminal booted.
+                    </span>
+                </div>
+                <span id="sysLogChevron" class="font-mono-tech text-xs text-cyan-400">[EXPAND ▲]</span>
+            </div>
+            <div id="sysLogBody" class="hidden bg-black/90 p-3 font-mono-tech text-xs max-h-40 overflow-y-auto space-y-1 text-slate-300">
+                <!-- Populated dynamically -->
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- NODE TELEMETRY / INSPECT MODAL -->
+    <div id="inspectModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="cyber-panel max-w-lg w-full p-6 border border-[#00f0ff] relative space-y-4">
+            <div class="flex items-center justify-between border-b border-cyan-500/30 pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 bg-[#fcee0a]"></span>
+                    <h3 class="font-orbitron text-base font-bold text-white tracking-wider uppercase">
+                        NODE TELEMETRY // INSPECTOR
+                    </h3>
+                </div>
+                <button onclick="closeInspectModal()" class="text-slate-400 hover:text-[#ff003c] font-mono-tech text-sm px-2 py-0.5 border border-transparent hover:border-rose-500/40">
+                    [X] ESC
+                </button>
+            </div>
+
+            <div id="inspectModalBody" class="space-y-3 font-mono-tech text-xs">
+                <!-- Populated dynamically -->
+            </div>
+
+            <div id="inspectModalActions" class="pt-3 border-t border-slate-800 flex flex-wrap justify-end gap-2">
+                <!-- Populated dynamically -->
+            </div>
         </div>
     </div>
 
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
     <script>
-        // --- Tab Switching Logic ---
-        function switchTab(tabId) {
-            // Update buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-
-            // Update content views
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            document.getElementById(tabId + '-tab').classList.add('active');
-        }
-
-        // --- Drive API Logic ---
+        // ============================================================================
+        // 1. GOOGLE DRIVE CREDENTIALS & STATE CONFIGURATION
+        // ============================================================================
         const API_KEY = 'AIzaSyAGQfDiuqM0L0CjoJjWyHj1AJc7tsj9_bk';
         const ROOT_FOLDER_ID = '1BOoFUul-K-slUQJ_KldEgrHhb9x19Axa';
 
-        let folderHistory = [ROOT_FOLDER_ID];
-        let currentFolderName = "Root Directory";
+        // Breadcrumb stack stores { id, name } objects so parent names are never lost
+        let folderHistory = [
+            { id: ROOT_FOLDER_ID, name: 'ROOT_SECTOR' }
+        ];
 
-        async function fetchDriveFiles(folderId) {
-            const statusElement = document.getElementById('status');
-            const listElement = document.getElementById('files');
-            
-            statusElement.style.display = 'block';
-            statusElement.innerText = 'Reading directory contents...';
-            listElement.style.display = 'none';
+        // Cached items in the active folder for instant client-side search, filter & sort
+        let currentRawFiles = [];
+        let filterMode = 'all'; // 'all' | 'folders' | 'files'
+        let viewMode = 'list';  // 'list' | 'grid'
+        let audioEnabled = true;
+        let audioCtx = null;
 
-            const query = encodeURIComponent(`'${folderId}' in parents and trashed = false`);
-            const fields = 'files(id,name,mimeType,webContentLink,webViewLink)';
-            const url = `https://www.googleapis.com/drive/v3/files?q=${query}&fields=${fields}&key=${API_KEY}`;
-
+        // ============================================================================
+        // 2. WEB AUDIO SYNTHESIZER (TACTILE CYBERPUNK UI SOUND EFFECTS)
+        // ============================================================================
+        function playCyberSound(type = 'click') {
+            if (!audioEnabled) return;
             try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error('API processing error. Validate permissions constraints.');
-                
-                const data = await response.json();
-                renderFiles(data.files);
-            } catch (error) {
-                statusElement.innerText = 'Error fetching structure: ' + error.message;
+                if (!audioCtx) {
+                    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                    if (AudioContextClass) audioCtx = new AudioContextClass();
+                }
+                if (!audioCtx) return;
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+
+                if (type === 'click') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(920, now);
+                    osc.frequency.exponentialRampToValueAtTime(280, now + 0.045);
+                    gain.gain.setValueAtTime(0.06, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                } else if (type === 'folder') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(440, now);
+                    osc.frequency.exponentialRampToValueAtTime(880, now + 0.08);
+                    gain.gain.setValueAtTime(0.07, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.085);
+                    osc.start(now);
+                    osc.stop(now + 0.09);
+                } else if (type === 'download') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(520, now);
+                    osc.frequency.setValueAtTime(780, now + 0.05);
+                    osc.frequency.setValueAtTime(1040, now + 0.10);
+                    gain.gain.setValueAtTime(0.05, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+                    osc.start(now);
+                    osc.stop(now + 0.17);
+                } else if (type === 'error') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(160, now);
+                    osc.frequency.linearRampToValueAtTime(110, now + 0.18);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.19);
+                    osc.start(now);
+                    osc.stop(now + 0.2);
+                }
+            } catch (err) {
+                // Ignore audio context restrictions if user hasn't interacted yet
             }
         }
 
-        function renderFiles(files) {
-            const listElement = document.getElementById('files');
-            const statusElement = document.getElementById('status');
-            const backBtn = document.getElementById('backBtn');
-            const breadcrumb = document.getElementById('breadcrumb');
-            
-            backBtn.style.display = folderHistory.length > 1 ? 'inline-flex' : 'none';
-            breadcrumb.innerText = currentFolderName;
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            document.getElementById('audioIcon').textContent = audioEnabled ? '🔊' : '🔇';
+            document.getElementById('audioLabel').textContent = audioEnabled ? 'SFX: ON' : 'SFX: OFF';
+            if (audioEnabled) playCyberSound('click');
+            showToast(audioEnabled ? 'AUDIO SYNTHESIS ENABLED' : 'AUDIO SYNTHESIS MUTED', 'cyan');
+        }
 
-            if (!files || files.length === 0) {
-                statusElement.innerText = 'This folder is currently empty.';
-                return;
+        // ============================================================================
+        // 3. SYSTEM CLOCK, LOGGING & TOAST NOTIFICATIONS
+        // ============================================================================
+        function updateClock() {
+            const now = new Date();
+            const timeStr = now.toISOString().replace('T', ' ').substring(0, 19) + ' UTC';
+            document.getElementById('liveClock').textContent = timeStr;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        function logSysEvent(message, level = 'INFO') {
+            const sysLogBody = document.getElementById('sysLogBody');
+            const lastLogPreview = document.getElementById('lastLogPreview');
+            const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
+
+            let colorClass = 'text-cyan-400';
+            if (level === 'WARN') colorClass = 'text-[#fcee0a]';
+            if (level === 'ERR') colorClass = 'text-[#ff003c]';
+            if (level === 'OK') colorClass = 'text-[#00ff66]';
+
+            const line = document.createElement('div');
+            line.className = 'flex items-start gap-2 border-b border-slate-900/80 pb-1';
+
+            const timeSpan = document.createElement('span');
+            timeSpan.className = 'text-slate-500 shrink-0';
+            timeSpan.textContent = `[${timestamp}]`;
+
+            const badgeSpan = document.createElement('span');
+            badgeSpan.className = `${colorClass} font-bold shrink-0`;
+            badgeSpan.textContent = `[${level}]`;
+
+            const msgSpan = document.createElement('span');
+            msgSpan.className = 'text-slate-300 break-all';
+            msgSpan.textContent = message;
+
+            line.appendChild(timeSpan);
+            line.appendChild(badgeSpan);
+            line.appendChild(msgSpan);
+
+            sysLogBody.prepend(line);
+            lastLogPreview.textContent = `[${level}] ${message}`;
+        }
+
+        function toggleSysLog() {
+            playCyberSound('click');
+            const body = document.getElementById('sysLogBody');
+            const chevron = document.getElementById('sysLogChevron');
+            const isHidden = body.classList.contains('hidden');
+            if (isHidden) {
+                body.classList.remove('hidden');
+                chevron.textContent = '[COLLAPSE ▼]';
+            } else {
+                body.classList.add('hidden');
+                chevron.textContent = '[EXPAND ▲]';
             }
-            
-            statusElement.style.display = 'none';
-            listElement.innerHTML = '';
-            listElement.style.display = 'block';
+        }
 
-            files.sort((a, b) => {
+        function showToast(text, theme = 'yellow') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+
+            const borderColors = {
+                yellow: 'border-[#fcee0a] text-[#fcee0a]',
+                cyan: 'border-[#00f0ff] text-[#00f0ff]',
+                magenta: 'border-[#ff003c] text-[#ff003c]'
+            };
+
+            toast.className = `cyber-toast bg-slate-950/95 border-l-4 border ${borderColors[theme] || borderColors.yellow} px-4 py-2.5 font-mono-tech text-xs shadow-lg transition-all duration-300`;
+            toast.textContent = `>> ${text}`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(20px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 2600);
+        }
+
+        // ============================================================================
+        // 4. GOOGLE DRIVE v3 API FETCH & DIRECTORY NAVIGATION
+        // ============================================================================
+        async function fetchDriveFiles(folderId) {
+            const statusContainer = document.getElementById('statusContainer');
+            const statusSpinner = document.getElementById('statusSpinner');
+            const statusTitle = document.getElementById('statusTitle');
+            const statusMessage = document.getElementById('statusMessage');
+            const filesContainer = document.getElementById('filesContainer');
+            const loadingBar = document.getElementById('loadingBar');
+            const statusDot = document.getElementById('statusDot');
+            const statusBadgeText = document.getElementById('statusBadgeText');
+
+            // Update UI for loading state
+            loadingBar.classList.remove('hidden');
+            statusContainer.classList.remove('hidden');
+            statusSpinner.classList.remove('hidden');
+            statusTitle.textContent = 'ACCESSING DATA SECTOR...';
+            statusTitle.className = 'font-orbitron text-sm tracking-widest text-[#fcee0a] uppercase mb-1';
+            statusMessage.textContent = `Querying Node ID: ${folderId}`;
+            filesContainer.classList.add('hidden');
+            document.getElementById('activeFolderIdReadout').textContent = folderId;
+
+            renderBreadcrumbs();
+
+            const query = encodeURIComponent(`'${folderId}' in parents and trashed = false`);
+            const fields = encodeURIComponent('files(id,name,mimeType,size,modifiedTime,webContentLink,webViewLink)');
+            const url = `https://www.googleapis.com/drive/v3/files?q=${query}&pageSize=1000&fields=${fields}&key=${API_KEY}`;
+
+            const startTime = performance.now();
+            logSysEvent(`GET /drive/v3/files?parent=${folderId}`, 'INFO');
+
+            try {
+                const response = await fetch(url);
+                const elapsed = Math.round(performance.now() - startTime);
+                document.getElementById('latencyReadout').textContent = `PING: ${elapsed} ms`;
+
+                if (!response.ok) {
+                    let errorDetail = 'API processing error. Validate permissions constraints.';
+                    try {
+                        const errJson = await response.json();
+                        if (errJson?.error?.message) errorDetail = errJson.error.message;
+                    } catch (_) {}
+                    throw new Error(errorDetail);
+                }
+
+                const data = await response.json();
+                currentRawFiles = Array.isArray(data.files) ? data.files : [];
+
+                statusDot.className = 'w-2 h-2 rounded-full bg-[#00ff66] animate-pulse';
+                statusBadgeText.textContent = 'NET_LINK: ONLINE';
+
+                logSysEvent(`Received ${currentRawFiles.length} nodes in ${elapsed}ms.`, 'OK');
+                updateSectorTelemetry(currentRawFiles);
+                applyFiltersAndRender();
+
+            } catch (error) {
+                playCyberSound('error');
+                statusDot.className = 'w-2 h-2 rounded-full bg-[#ff003c] animate-ping';
+                statusBadgeText.textContent = 'NET_LINK: ERROR';
+
+                statusSpinner.classList.add('hidden');
+                statusTitle.textContent = 'BREACH PROTOCOL FAILED // API ERROR';
+                statusTitle.className = 'font-orbitron text-sm tracking-widest text-[#ff003c] uppercase mb-2';
+                statusMessage.textContent = error.message;
+                logSysEvent(`Sector read failed: ${error.message}`, 'ERR');
+            } finally {
+                loadingBar.classList.add('hidden');
+            }
+        }
+
+        // Update top HUD counters
+        function updateSectorTelemetry(files) {
+            let folderCount = 0;
+            let fileCount = 0;
+            let totalBytes = 0;
+
+            files.forEach(item => {
+                if (item.mimeType === 'application/vnd.google-apps.folder') {
+                    folderCount++;
+                } else {
+                    fileCount++;
+                    if (item.size) totalBytes += parseInt(item.size, 10) || 0;
+                }
+            if (searchQuery.length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+
+            // 1. Filter by type & search string
+            let filtered = currentRawFiles.filter(file => {
+                const isFolder = file.mimeType === 'application/vnd.google-apps.folder';
+                if (filterMode === 'folders' && !isFolder) return false;
+                if (filterMode === 'files' && isFolder) return false;
+                if (searchQuery && !file.name.toLowerCase().includes(searchQuery)) return false;
+                return true;
+            });
+
+            // 2. Sort folders first, then apply chosen sort criterion
+            filtered.sort((a, b) => {
                 const aIsFolder = a.mimeType === 'application/vnd.google-apps.folder';
                 const bIsFolder = b.mimeType === 'application/vnd.google-apps.folder';
                 if (aIsFolder && !bIsFolder) return -1;
                 if (!aIsFolder && bIsFolder) return 1;
-                return a.name.localeCompare(b.name);
+
+                if (sortMode === 'name-asc') {
+                    return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
+                } else if (sortMode === 'name-desc') {
+                    return b.name.localeCompare(a.name, undefined, { numeric: true, sensitivity: 'base' });
+                } else if (sortMode === 'size-desc') {
+                    return (parseInt(b.size || 0, 10)) - (parseInt(a.size || 0, 10));
+                } else if (sortMode === 'size-asc') {
+                    return (parseInt(a.size || 0, 10)) - (parseInt(b.size || 0, 10));
+                } else if (sortMode === 'date-desc') {
+                    return new Date(b.modifiedTime || 0) - new Date(a.modifiedTime || 0);
+                } else if (sortMode === 'date-asc') {
+                    return new Date(a.modifiedTime || 0) - new Date(b.modifiedTime || 0);
+                }
+                return 0;
             });
 
+            document.getElementById('showingCountReadout').textContent =
+                `DISPLAYING ${filtered.length} OF ${currentRawFiles.length} NODES`;
+
+            renderFileNodes(filtered);
+        }
+
+        function renderFileNodes(files) {
+            const statusContainer = document.getElementById('statusContainer');
+            const statusSpinner = document.getElementById('statusSpinner');
+            const statusTitle = document.getElementById('statusTitle');
+            const statusMessage = document.getElementById('statusMessage');
+            const filesContainer = document.getElementById('filesContainer');
+            const listHeader = document.getElementById('listHeader');
+
+            if (!files || files.length === 0) {
+                filesContainer.classList.add('hidden');
+                statusContainer.classList.remove('hidden');
+                statusSpinner.classList.add('hidden');
+                statusTitle.textContent = currentRawFiles.length === 0 ? 'SECTOR EMPTY' : 'NO MATCHING NODES';
+                statusTitle.className = 'font-orbitron text-sm tracking-widest text-cyan-400 uppercase mb-1';
+                statusMessage.textContent = currentRawFiles.length === 0
+                    ? 'This directory contains no active files or sub-directories.'
+                    : 'No files matched your active search or filter parameters.';
+                return;
+            }
+
+            statusContainer.classList.add('hidden');
+            filesContainer.classList.remove('hidden');
+            filesContainer.innerHTML = '';
+
+            if (viewMode === 'grid') {
+                listHeader.classList.add('hidden');
+                filesContainer.className = 'p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5';
+            } else {
+                listHeader.className = 'hidden sm:grid sm:grid-cols-12 gap-4 px-5 py-3 bg-slate-950/90 border-b border-cyan-500/20 text-[11px] font-mono-tech uppercase tracking-widest text-slate-400';
+                filesContainer.className = 'divide-y divide-slate-800/80';
+            }
+
             files.forEach(file => {
-                const li = document.createElement('li');
-                li.className = 'file-item';
-                
                 const isFolder = file.mimeType === 'application/vnd.google-apps.folder';
-                const icon = isFolder ? '📁' : '📄';
+                const meta = getMimeTypeMeta(file.mimeType, file.name);
+                const sizeFormatted = isFolder ? '-- DIR --' : (file.size ? formatBytes(parseInt(file.size, 10)) : 'CLOUD_DOC');
+                const dateFormatted = file.modifiedTime ? formatCyberDate(file.modifiedTime) : 'UNKNOWN';
+                const downloadUrl = getDirectDownloadUrl(file);
 
-                const infoDiv = document.createElement('div');
-                infoDiv.className = 'file-info';
-                infoDiv.innerHTML = `<span class="icon">${icon}</span> <span>${file.name}</span>`;
-                
-                if (isFolder) {
-                    infoDiv.onclick = () => navigateInto(file.id, file.name);
+                if (viewMode === 'list') {
+                    // LIST ROW VIEW
+                    const row = document.createElement('div');
+                    row.className = `file-row ${isFolder ? 'folder-row' : ''} px-4 sm:px-5 py-3.5 grid grid-cols-1 sm:grid-cols-12 gap-3 items-center`;
+
+                    // Left Column: Icon + Name + Type Tag
+                    const infoCol = document.createElement('div');
+                    infoCol.className = `sm:col-span-6 flex items-center gap-3.5 min-w-0 ${isFolder ? 'cursor-pointer group' : ''}`;
+                    if (isFolder) {
+                        infoCol.onclick = () => navigateInto(file.id, file.name);
+                    }
+
+                    const iconBox = document.createElement('div');
+                    iconBox.className = `w-10 h-10 shrink-0 flex items-center justify-center border ${meta.borderClass} ${meta.bgClass} ${meta.textClass}`;
+                    iconBox.innerHTML = meta.svg;
+
+                    const textWrapper = document.createElement('div');
+                    textWrapper.className = 'min-w-0 flex-1';
+
+                    const nameEl = document.createElement('div');
+                    nameEl.className = `font-semibold text-base truncate ${isFolder ? 'text-[#00f0ff] group-hover:text-[#fcee0a]' : 'text-slate-100'} transition-colors`;
+                    nameEl.textContent = file.name; // XSS safe
+
+                    const subMeta = document.createElement('div');
+                    subMeta.className = 'flex items-center gap-2 text-[11px] font-mono-tech text-slate-400';
+                    subMeta.innerHTML = `<span class="${meta.textClass}">${meta.badge}</span> <span class="sm:hidden">&bull; ${sizeFormatted}</span>`;
+
+                    textWrapper.appendChild(nameEl);
+                    textWrapper.appendChild(subMeta);
+                    infoCol.appendChild(iconBox);
+                    infoCol.appendChild(textWrapper);
+
+                    // Size Column
+                    const sizeCol = document.createElement('div');
+                    sizeCol.className = 'hidden sm:block sm:col-span-2 font-mono-tech text-xs text-slate-300';
+                    sizeCol.textContent = sizeFormatted;
+
+                    // Date Column
+                    const dateCol = document.createElement('div');
+                    dateCol.className = 'hidden sm:block sm:col-span-2 font-mono-tech text-xs text-slate-400';
+                    dateCol.textContent = dateFormatted;
+
+                    // Actions Column
+                    const actionsCol = document.createElement('div');
+                    actionsCol.className = 'sm:col-span-2 flex items-center justify-end gap-2';
+
+                    if (isFolder) {
+                        const openBtn = document.createElement('button');
+                        openBtn.className = 'cyber-btn-cyan px-3 py-1.5 text-xs font-bold cursor-pointer';
+                        openBtn.textContent = 'ACCESS // DIR';
+                        openBtn.onclick = () => navigateInto(file.id, file.name);
+                        actionsCol.appendChild(openBtn);
+                    } else {
+                        if (file.webViewLink) {
+                            const viewLink = document.createElement('a');
+                            viewLink.href = file.webViewLink;
+                            viewLink.target = '_blank';
+                            viewLink.rel = 'noopener noreferrer';
+                            viewLink.className = 'cyber-btn-cyan px-2.5 py-1.5 text-xs';
+                            viewLink.textContent = 'VIEW';
+                            viewLink.onclick = () => playCyberSound('click');
+                            actionsCol.appendChild(viewLink);
+                        }
+
+                        if (downloadUrl) {
+                            const dlLink = document.createElement('a');
+                            dlLink.href = downloadUrl;
+                            dlLink.target = '_blank';
+                            dlLink.rel = 'noopener noreferrer';
+                            dlLink.className = 'cyber-btn-yellow px-3 py-1.5 text-xs';
+                            dlLink.textContent = 'DL';
+                            dlLink.title = 'Download File';
+                            dlLink.onclick = () => {
+                                playCyberSound('download');
+                                logSysEvent(`Triggered extraction: ${file.name}`, 'OK');
+                            };
+                            actionsCol.appendChild(dlLink);
+                        }
+                    }
+
+                    // Inspect Node Telemetry Button
+                    const inspectBtn = document.createElement('button');
+                    inspectBtn.className = 'px-2 py-1.5 text-xs font-mono-tech text-slate-400 hover:text-[#fcee0a] border border-slate-800 hover:border-yellow-400/50 transition cursor-pointer';
+                    inspectBtn.title = 'Inspect Node Telemetry';
+                    inspectBtn.textContent = 'ⓘ';
+                    inspectBtn.onclick = () => openInspectModal(file);
+                    actionsCol.appendChild(inspectBtn);
+
+                    row.appendChild(infoCol);
+                    row.appendChild(sizeCol);
+                    row.appendChild(dateCol);
+                    row.appendChild(actionsCol);
+
+                    filesContainer.appendChild(row);
+                } else {
+                    // GRID CARD VIEW
+                    const card = document.createElement('div');
+                    card.className = 'cyber-card p-4 flex flex-col justify-between gap-4';
+
+                    const topArea = document.createElement('div');
+                    topArea.className = `flex items-start gap-3 ${isFolder ? 'cursor-pointer group' : ''}`;
+                    if (isFolder) {
+                        topArea.onclick = () => navigateInto(file.id, file.name);
+                    }
+
+                    const iconBox = document.createElement('div');
+                    iconBox.className = `w-11 h-11 shrink-0 flex items-center justify-center border ${meta.borderClass} ${meta.bgClass} ${meta.textClass}`;
+                    iconBox.innerHTML = meta.svg;
+
+                    const titleBox = document.createElement('div');
+                    titleBox.className = 'min-w-0 flex-1';
+
+                    const badgeRow = document.createElement('div');
+                    badgeRow.className = 'flex items-center justify-between gap-1 mb-1';
+                    badgeRow.innerHTML = `<span class="font-mono-tech text-[10px] px-1.5 py-0.5 border ${meta.borderClass} ${meta.textClass}">${meta.badge}</span>
+                                          <span class="font-mono-tech text-[11px] text-slate-400">${sizeFormatted}</span>`;
+
+                    const nameEl = document.createElement('div');
+                    nameEl.className = `font-bold text-base break-words line-clamp-2 ${isFolder ? 'text-[#00f0ff] group-hover:text-[#fcee0a]' : 'text-slate-100'}`;
+                    nameEl.textContent = file.name;
+
+                    titleBox.appendChild(badgeRow);
+                    titleBox.appendChild(nameEl);
+                    topArea.appendChild(iconBox);
+                    topArea.appendChild(titleBox);
+
+                    const bottomArea = document.createElement('div');
+                    bottomArea.className = 'pt-3 border-t border-slate-800/90 flex items-center justify-between gap-2';
+
+                    const dateSpan = document.createElement('span');
+                    dateSpan.className = 'font-mono-tech text-[11px] text-slate-500';
+                    dateSpan.textContent = dateFormatted;
+
+                    const btnGroup = document.createElement('div');
+                    btnGroup.className = 'flex items-center gap-1.5';
+
+                    if (isFolder) {
+                        const openBtn = document.createElement('button');
+                        openBtn.className = 'cyber-btn-cyan px-3 py-1 text-xs font-bold cursor-pointer';
+                        openBtn.textContent = 'OPEN DIR';
+                        openBtn.onclick = () => navigateInto(file.id, file.name);
+                        btnGroup.appendChild(openBtn);
+                    } else {
+                        if (file.webViewLink) {
+                            const viewLink = document.createElement('a');
+                            viewLink.href = file.webViewLink;
+                            viewLink.target = '_blank';
+                            viewLink.rel = 'noopener noreferrer';
+                            viewLink.className = 'cyber-btn-cyan px-2.5 py-1 text-xs';
+                            viewLink.textContent = 'VIEW';
+                            btnGroup.appendChild(viewLink);
+                        }
+                        if (downloadUrl) {
+                            const dlLink = document.createElement('a');
+                            dlLink.href = downloadUrl;
+                            dlLink.target = '_blank';
+                            dlLink.rel = 'noopener noreferrer';
+                            dlLink.className = 'cyber-btn-yellow px-2.5 py-1 text-xs';
+                            dlLink.textContent = 'EXTRACT';
+                            dlLink.onclick = () => playCyberSound('download');
+                            btnGroup.appendChild(dlLink);
+                        }
+                    }
+
+                    const infoBtn = document.createElement('button');
+                    infoBtn.className = 'px-2 py-1 text-xs font-mono-tech text-slate-400 hover:text-[#fcee0a] border border-slate-800 cursor-pointer';
+                    infoBtn.textContent = 'ⓘ';
+                    infoBtn.onclick = () => openInspectModal(file);
+                    btnGroup.appendChild(infoBtn);
+
+                    bottomArea.appendChild(dateSpan);
+                    bottomArea.appendChild(btnGroup);
+
+                    card.appendChild(topArea);
+                    card.appendChild(bottomArea);
+                    filesContainer.appendChild(card);
                 }
+            });
+        }
 
-                const actionsDiv = document.createElement('div');
-                actionsDiv.className = 'file-actions';
+        // ============================================================================
+        // 6. BREADCRUMB TRAIL & FOLDER HISTORY MANAGEMENT
+        // ============================================================================
+        function renderBreadcrumbs() {
+            const trail = document.getElementById('breadcrumbTrail');
+            const backBtn = document.getElementById('backBtn');
 
-                let actionButtons = `<a href="${file.webViewLink}" target="_blank" class="btn view-btn">View</a>`;
-                if (!isFolder && file.webContentLink) {
-                    actionButtons += `<a href="${file.webContentLink}" class="btn dl-btn">Download</a>`;
+            if (folderHistory.length > 1) {
+                backBtn.classList.remove('hidden');
+                backBtn.classList.add('inline-flex');
+            } else {
+                backBtn.classList.add('hidden');
+                backBtn.classList.remove('inline-flex');
+            }
+
+            trail.innerHTML = '';
+
+            folderHistory.forEach((node, index) => {
+                const isLast = index === folderHistory.length - 1;
+
+                const crumbBtn = document.createElement('button');
+                crumbBtn.className = isLast
+                    ? 'px-2.5 py-1 bg-yellow-400/15 border border-[#fcee0a] text-[#fcee0a] font-bold tracking-wider uppercase cursor-default'
+                    : 'px-2 py-1 bg-slate-900/90 border border-cyan-500/30 text-cyan-300 hover:border-[#00f0ff] hover:text-white uppercase transition cursor-pointer';
+
+                crumbBtn.textContent = node.name;
+                if (!isLast) {
+                    crumbBtn.onclick = () => jumpToBreadcrumb(index);
                 }
-                actionsDiv.innerHTML = actionButtons;
+                trail.appendChild(crumbBtn);
 
-                li.appendChild(infoDiv);
-                li.appendChild(actionsDiv);
-                listElement.appendChild(li);
+                if (!isLast) {
+                    const sep = document.createElement('span');
+                    sep.className = 'text-slate-600 select-none px-0.5';
+                    sep.textContent = '//';
+                    trail.appendChild(sep);
+                }
             });
         }
 
         function navigateInto(folderId, folderName) {
-            currentFolderName = folderName;
-            folderHistory.push(folderId);
+            playCyberSound('folder');
+            document.getElementById('searchInput').value = '';
+            folderHistory.push({ id: folderId, name: folderName });
+            logSysEvent(`Entering sector: ${folderName}`, 'INFO');
             fetchDriveFiles(folderId);
         }
 
         function navigateUp() {
             if (folderHistory.length > 1) {
+                playCyberSound('folder');
+                document.getElementById('searchInput').value = '';
                 folderHistory.pop();
-                const previousFolderId = folderHistory[folderHistory.length - 1];
-                currentFolderName = folderHistory.length === 1 ? "Root Directory" : "Parent Folder";
-                fetchDriveFiles(previousFolderId);
+                const current = folderHistory[folderHistory.length - 1];
+                logSysEvent(`Ascending to parent sector: ${current.name}`, 'INFO');
+                fetchDriveFiles(current.id);
             }
         }
 
-        // Initialize Drive fetching automatically
-        fetchDriveFiles(ROOT_FOLDER_ID);
+        function jumpToBreadcrumb(targetIndex) {
+            if (targetIndex < 0 || targetIndex >= folderHistory.length - 1) return;
+            playCyberSound('folder');
+            document.getElementById('searchInput').value = '';
+            folderHistory = folderHistory.slice(0, targetIndex + 1);
+            const target = folderHistory[folderHistory.length - 1];
+            logSysEvent(`Jumping directly to sector: ${target.name}`, 'INFO');
+            fetchDriveFiles(target.id);
+        }
+
+        function refreshCurrentNode() {
+            playCyberSound('click');
+            const current = folderHistory[folderHistory.length - 1];
+            showToast(`RESCANNING ${current.name}...`, 'cyan');
+            fetchDriveFiles(current.id);
+        }
+
+        // ============================================================================
+        // 7. UI CONTROLS: FILTER TABS, VIEW MODE, SEARCH & INSPECT MODAL
+        // ============================================================================
+        function setFilterMode(mode) {
+            playCyberSound('click');
+            filterMode = mode;
+            const modes = ['all', 'folders', 'files'];
+            modes.forEach(m => {
+                const btn = document.getElementById(`filter-${m}`);
+                if (m === mode) {
+                    btn.className = 'filter-tab flex-1 py-1.5 text-xs font-mono-tech uppercase tracking-wider bg-cyan-500/20 text-[#00f0ff] border border-cyan-400/50 transition';
+                } else {
+                    btn.className = 'filter-tab flex-1 py-1.5 text-xs font-mono-tech uppercase tracking-wider text-slate-400 hover:text-slate-200 border border-transparent transition';
+                }
+            });
+            applyFiltersAndRender();
+        }
+
+        function toggleViewMode() {
+            playCyberSound('click');
+            viewMode = viewMode === 'list' ? 'grid' : 'list';
+            document.getElementById('viewModeLabel').textContent = viewMode === 'list' ? 'GRID' : 'LIST';
+            applyFiltersAndRender();
+        }
+
+        function clearSearch() {
+            playCyberSound('click');
+            const input = document.getElementById('searchInput');
+            input.value = '';
+            applyFiltersAndRender();
+            input.focus();
+        }
+
+        function openInspectModal(file) {
+            playCyberSound('click');
+            const modal = document.getElementById('inspectModal');
+            const body = document.getElementById('inspectModalBody');
+            const actions = document.getElementById('inspectModalActions');
+
+            const isFolder = file.mimeType === 'application/vnd.google-apps.folder';
+            const sizeText = isFolder ? 'DIRECTORY CONTAINER' : (file.size ? `${formatBytes(parseInt(file.size, 10))} (${Number(file.size).toLocaleString()} bytes)` : 'Cloud Native Format');
+            const modifiedText = file.modifiedTime ? new Date(file.modifiedTime).toUTCString() : 'N/A';
+            const downloadUrl = getDirectDownloadUrl(file);
+
+            body.innerHTML = '';
+            const fields = [
+                { label: 'NODE_NAME', value: file.name, highlight: 'text-[#fcee0a] font-bold' },
+                { label: 'OBJECT_ID', value: file.id, highlight: 'text-cyan-400 select-all' },
+                { label: 'MIME_TYPE', value: file.mimeType, highlight: 'text-slate-200' },
+                { label: 'DATA_VOLUME', value: sizeText, highlight: 'text-emerald-400' },
+                { label: 'LAST_MODIFIED', value: modifiedText, highlight: 'text-slate-300' }
+            ];
+
+            fields.forEach(f => {
+                const row = document.createElement('div');
+                row.className = 'bg-slate-950/90 border border-slate-800 p-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-1';
+                const lbl = document.createElement('span');
+                lbl.className = 'text-slate-500 uppercase';
+                lbl.textContent = f.label;
+                const val = document.createElement('span');
+                val.className = `${f.highlight} break-all text-right`;
+                val.textContent = f.value;
+                row.appendChild(lbl);
+                row.appendChild(val);
+                body.appendChild(row);
+            });
+
+            actions.innerHTML = '';
+
+            // Copy Link button
+            if (file.webViewLink) {
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'cyber-btn-cyan px-3.5 py-2 text-xs cursor-pointer';
+                copyBtn.textContent = 'COPY SHARE LINK';
+                copyBtn.onclick = () => copyToClipboard(file.webViewLink, 'SHARE LINK COPIED TO CLIPBOARD');
+                actions.appendChild(copyBtn);
+            }
+
+            if (!isFolder && downloadUrl) {
+                const dlBtn = document.createElement('a');
+                dlBtn.href = downloadUrl;
+                dlBtn.target = '_blank';
+                dlBtn.rel = 'noopener noreferrer';
+                dlBtn.className = 'cyber-btn-yellow px-4 py-2 text-xs';
+                dlBtn.textContent = 'EXTRACT // DOWNLOAD';
+                dlBtn.onclick = () => playCyberSound('download');
+                actions.appendChild(dlBtn);
+            }
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeInspectModal() {
+            playCyberSound('click');
+            const modal = document.getElementById('inspectModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function copyToClipboard(text, successMsg) {
+            playCyberSound('click');
+            const tempInput = document.createElement('textarea');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            try {
+                document.execCommand('copy');
+                showToast(successMsg, 'yellow');
+                logSysEvent(`Copied to clipboard: ${text}`, 'OK');
+            } catch (err) {
+                showToast('CLIPBOARD ACCESS DENIED', 'magenta');
+            }
+            document.body.removeChild(tempInput);
+        }
+
+        // ============================================================================
+        // 8. HELPER UTILITIES (MIME ICONS, BYTE FORMATTER, DIRECT DL URL)
+        // ============================================================================
+        function getDirectDownloadUrl(file) {
+            if (file.mimeType === 'application/vnd.google-apps.folder') return null;
+            if (file.webContentLink) return file.webContentLink;
+            // Fallback for Google Workspace documents (Docs, Sheets, Slides)
+            if (file.mimeType === 'application/vnd.google-apps.document') {
+                return `https://docs.google.com/document/d/${file.id}/export?format=pdf`;
+            }
+            if (file.mimeType === 'application/vnd.google-apps.spreadsheet') {
+                return `https://docs.google.com/spreadsheets/d/${file.id}/export?format=xlsx`;
+            }
+            if (file.mimeType === 'application/vnd.google-apps.presentation') {
+                return `https://docs.google.com/presentation/d/${file.id}/export/pdf`;
+            }
+            return `https://drive.google.com/uc?export=download&id=${file.id}`;
+        }
+
+        function formatBytes(bytes) {
+            if (!bytes || bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+
+        function formatCyberDate(isoStr) {
+            try {
+                const d = new Date(isoStr);
+                const yyyy = d.getFullYear();
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const dd = String(d.getDate()).padStart(2, '0');
+                return `${yyyy}.${mm}.${dd}`;
+            } catch (_) {
+                return 'UNKNOWN';
+            }
+        }
+
+        function getMimeTypeMeta(mimeType = '', fileName = '') {
+            const lowerName = fileName.toLowerCase();
+
+            // 1. Folder
+            if (mimeType === 'application/vnd.google-apps.folder') {
+                return {
+                    badge: 'DIR_NODE',
+                    textClass: 'text-[#00f0ff]',
+                    bgClass: 'bg-cyan-500/10',
+                    borderClass: 'border-cyan-400/40',
+                    svg: `<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+                          </svg>`
+                };
+            }
+
+            // 2. Archive / Compressed
+            if (mimeType.includes('zip') || mimeType.includes('rar') || mimeType.includes('tar') || mimeType.includes('7z') ||
+                /\.(zip|rar|7z|tar|gz|iso|apk)$/i.test(lowerName)) {
+                return {
+                    badge: 'ARCHIVE',
+                    textClass: 'text-[#fcee0a]',
+                    bgClass: 'bg-yellow-400/10',
+                    borderClass: 'border-yellow-400/40',
+                    svg: `<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                          </svg>`
+                };
+            }
+
+            // 3. PDF / Document
+            if (mimeType.includes('pdf') || mimeType.includes('document') || mimeType.includes('word') || /\.(pdf|doc|docx|txt|md|rtf)$/i.test(lowerName)) {
+                return {
+                    badge: 'DOC_SHARD',
+                    textClass: 'text-[#ff003c]',
+                    bgClass: 'bg-rose-500/10',
+                    borderClass: 'border-rose-500/40',
+                    svg: `<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                          </svg>`
+                };
+            }
+
+            // 4. Image
+            if (mimeType.startsWith('image/') || /\.(png|jpg|jpeg|gif|webp|svg|bmp)$/i.test(lowerName)) {
+                return {
+                    badge: 'OPTIC_IMG',
+                    textClass: 'text-purple-400',
+                    bgClass: 'bg-purple-500/10',
+                    borderClass: 'border-purple-400/40',
+                    svg: `<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                          </svg>`
+                };
+            }
+
+            // 5. Video / Audio
+            if (mimeType.startsWith('video/') || mimeType.startsWith('audio/') || /\.(mp4|mkv|webm|avi|mov|mp3|wav|flac|ogg)$/i.test(lowerName)) {
+                return {
+                    badge: 'MEDIA_STREAM',
+                    textClass: 'text-emerald-400',
+                    bgClass: 'bg-emerald-500/10',
+                    borderClass: 'border-emerald-400/40',
+                    svg: `<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                          </svg>`
+                };
+            }
+
+            // 6. Code / Script / Executable
+            if (/\.(js|ts|py|cpp|c|h|html|css|json|xml|sh|bat|exe|dll|sql|java|php)$/i.test(lowerName) || mimeType.includes('script') || mimeType.includes('json')) {
+                return {
+                    badge: 'DAEMON_CODE',
+                    textClass: 'text-[#00ff66]',
+                    bgClass: 'bg-green-500/10',
+                    borderClass: 'border-green-400/40',
+                    svg: `<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                          </svg>`
+                };
+            }
+
+            // Default Binary / Data File
+            return {
+                badge: 'DATA_FILE',
+                textClass: 'text-cyan-300',
+                bgClass: 'bg-slate-800/80',
+                borderClass: 'border-slate-600',
+                svg: `<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                      </svg>`
+            };
+        }
+
+        // Keyboard shortcuts: '/' focuses search bar, 'Escape' closes modal or clears search
+        window.addEventListener('keydown', (e) => {
+            const searchInput = document.getElementById('searchInput');
+            if (e.key === '/' && document.activeElement !== searchInput) {
+                e.preventDefault();
+                searchInput.focus();
+            } else if (e.key === 'Escape') {
+                const modal = document.getElementById('inspectModal');
+                if (!modal.classList.contains('hidden')) {
+                    closeInspectModal();
+                } else if (document.activeElement === searchInput && searchInput.value !== '') {
+                    clearSearch();
+                }
+            }
+        });
+
+        // Boot up initial Google Drive directory fetch on load
+        window.onload = function () {
+            fetchDriveFiles(ROOT_FOLDER_ID);
+        };
     </script>
 </body>
 </html>
